@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createHash, randomUUID } from 'crypto'
 import { createServiceRoleClient } from '@/lib/supabase/server'
+import { validarContenido } from '@/lib/filtro-palabras'
 import type { SeccionWiki } from '@/types'
 
 const SECCIONES_VALIDAS: SeccionWiki[] = [
@@ -36,6 +37,11 @@ export async function POST(request: NextRequest) {
         { error: 'El contenido no puede superar los 500 caracteres' },
         { status: 400 }
       )
+    }
+
+    const errorFiltro = validarContenido(contenido)
+    if (errorFiltro) {
+      return NextResponse.json({ error: errorFiltro }, { status: 400 })
     }
 
     const forwarded = request.headers.get('x-forwarded-for')

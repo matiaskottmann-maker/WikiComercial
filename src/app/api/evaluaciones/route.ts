@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createHash, randomUUID } from 'crypto'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 import { generarSlug } from '@/lib/utils'
+import { validarContenido } from '@/lib/filtro-palabras'
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,6 +34,20 @@ export async function POST(request: NextRequest) {
         { error: 'El comentario no puede superar los 1000 caracteres' },
         { status: 400 }
       )
+    }
+
+    // Filtro de groserías
+    if (comentario) {
+      const errorFiltro = validarContenido(comentario)
+      if (errorFiltro) {
+        return NextResponse.json({ error: errorFiltro }, { status: 400 })
+      }
+    }
+    if (asignatura_nombre) {
+      const errorFiltro = validarContenido(asignatura_nombre)
+      if (errorFiltro) {
+        return NextResponse.json({ error: errorFiltro }, { status: 400 })
+      }
     }
 
     const forwarded = request.headers.get('x-forwarded-for')

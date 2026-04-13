@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createHash, randomUUID } from 'crypto'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 import { generarSlug } from '@/lib/utils'
+import { validarContenido } from '@/lib/filtro-palabras'
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,6 +19,11 @@ export async function POST(request: NextRequest) {
         { error: 'Nombre y apellido son obligatorios' },
         { status: 400 }
       )
+    }
+
+    const errorFiltro = validarContenido(`${nombre} ${apellido}`)
+    if (errorFiltro) {
+      return NextResponse.json({ error: errorFiltro }, { status: 400 })
     }
 
     const forwarded = request.headers.get('x-forwarded-for')

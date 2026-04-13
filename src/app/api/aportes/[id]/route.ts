@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createHash } from 'crypto'
 import { createServiceRoleClient } from '@/lib/supabase/server'
+import { validarContenido } from '@/lib/filtro-palabras'
 
 const EDIT_WINDOW_MS = 10 * 60 * 1000
 
@@ -40,6 +41,11 @@ export async function PUT(request: NextRequest, context: RouteContext) {
 
     if (contenido.length > 500) {
       return NextResponse.json({ error: 'Máximo 500 caracteres' }, { status: 400 })
+    }
+
+    const errorFiltro = validarContenido(contenido)
+    if (errorFiltro) {
+      return NextResponse.json({ error: errorFiltro }, { status: 400 })
     }
 
     const result = await verifyToken(id, edit_token)
