@@ -103,3 +103,33 @@ export interface EditToken {
   token: string
   createdAt: string
 }
+
+// --- Admin y moderación ---
+
+export interface Admin {
+  email: string
+  added_by: string | null
+  created_at: string
+}
+
+export interface Reporte {
+  id: string
+  evaluacion_id: string | null
+  aporte_id: string | null
+  motivo: string | null
+  resuelto: boolean
+  created_at: string
+}
+
+export interface ReporteConContenido extends Reporte {
+  evaluaciones:
+    | (Pick<Evaluacion, 'id' | 'comentario' | 'rating_general' | 'semestre' | 'created_at'> & {
+        profesores: Pick<Profesor, 'nombre' | 'apellido' | 'slug'> | null
+      })
+    | null
+  aportes_wiki:
+    | (Pick<AporteWiki, 'id' | 'contenido' | 'seccion' | 'created_at'> & {
+        profesores: Pick<Profesor, 'nombre' | 'apellido' | 'slug'> | null
+      })
+    | null
+}
