@@ -78,8 +78,10 @@ implícitamente).
    - Si NO está → no se envía nada.
    - **En ambos casos** responde 200 con el mismo mensaje genérico
      ("Si tu correo es de administrador, recibirás un enlace"), para no revelar quiénes son admins.
-3. El magic link redirige a `/auth/callback` (route handler que hace `exchangeCodeForSession`)
-   y de ahí a `/admin`.
+3. El magic link redirige a `/auth/confirm` (route handler que hace `verifyOtp` con el
+   `token_hash` del enlace — patrón oficial de `@supabase/ssr`, funciona aunque el correo se abra
+   en otro navegador/dispositivo) y de ahí a `/admin`. Requiere ajustar el template del email
+   Magic Link en Supabase a `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email`.
 4. Cerrar sesión: `signOut()` con el browser client desde `/admin`.
 
 ### Verificación server-side (helper central)
@@ -188,8 +190,8 @@ contenido" si 429).
 ## 6. Configuración requerida (manual, fuera del código)
 
 - Habilitar el proveedor Email (magic link / OTP) en Supabase Auth.
-- Configurar la URL de redirect (`/auth/callback`) en la configuración de Auth de Supabase
-  (Site URL y Redirect URLs para localhost y producción en Vercel).
+- Configurar Site URL y Redirect URLs (localhost y producción) en la configuración de Auth de
+  Supabase, y el template del email Magic Link apuntando a `/auth/confirm` (ver flujo de login).
 
 ## 7. Testing
 
