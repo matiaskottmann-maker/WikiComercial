@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createHash } from 'crypto'
 import { createServiceRoleClient } from '@/lib/supabase/server'
+import { getAdminEmail } from '@/lib/admin'
 import { validarContenido } from '@/lib/filtro-palabras'
 
 const EDIT_WINDOW_MS = 10 * 60 * 1000
@@ -69,7 +70,18 @@ export async function PUT(request: NextRequest, context: RouteContext) {
 export async function DELETE(request: NextRequest, context: RouteContext) {
   try {
     const { id } = await context.params
-    const body = await request.json()
+
+    // Admin: elimina sin token ni ventana de tiempo
+    const adminEmail = await getAdminEmail()
+    if (adminEmail) {
+      const supabase = createServiceRoleClient()
+      const { error } = await supabase.from('aportes_wiki').delete().eq('id', id)
+      if (error) return NextResponse.json({ error: 'Error al eliminar' }, { status: 500 })
+      return NextResponse.json({ success: true })
+    }
+
+    // Autor: requiere edit_token dentro de la ventana de 10 min
+    const body = await request.json().catch(() => ({}))
     const { edit_token } = body as { edit_token?: string }
 
     if (!edit_token) {
