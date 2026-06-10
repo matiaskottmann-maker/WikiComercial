@@ -6,12 +6,14 @@ import type { EvaluacionConAsignatura } from '@/types'
 import RatingStars from './RatingStars'
 import CountdownTimer from './CountdownTimer'
 import { getEditToken, removeEditToken } from '@/lib/utils'
+import ReportarButton from './ReportarButton'
 
 interface EvaluacionListaProps {
   evaluaciones: EvaluacionConAsignatura[]
+  isAdmin?: boolean
 }
 
-export default function EvaluacionLista({ evaluaciones }: EvaluacionListaProps) {
+export default function EvaluacionLista({ evaluaciones, isAdmin = false }: EvaluacionListaProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [, setForceUpdate] = useState(0)
   const router = useRouter()
@@ -20,14 +22,15 @@ export default function EvaluacionLista({ evaluaciones }: EvaluacionListaProps) 
 
   async function handleDelete(evId: string) {
     const token = getEditToken(evId)
-    if (!token) return
+    if (!token && !isAdmin) return
+    if (isAdmin && !token && !confirm('¿Eliminar esta evaluación definitivamente?')) return
 
     setDeletingId(evId)
     try {
       const res = await fetch(`/api/evaluaciones/${evId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ edit_token: token.token }),
+        body: JSON.stringify(token ? { edit_token: token.token } : {}),
       })
 
       if (res.ok) {
@@ -115,15 +118,18 @@ export default function EvaluacionLista({ evaluaciones }: EvaluacionListaProps) 
               <p className="text-xs text-gray-400">
                 {new Date(ev.created_at).toLocaleDateString('es-CL')}
               </p>
-              {token && (
-                <button
-                  onClick={() => handleDelete(ev.id)}
-                  disabled={deletingId === ev.id}
-                  className="text-xs text-red-500 hover:text-red-600 transition-colors disabled:opacity-50"
-                >
-                  {deletingId === ev.id ? 'Eliminando...' : 'Eliminar'}
-                </button>
-              )}
+              <div className="flex items-center gap-3">
+                <ReportarButton evaluacionId={ev.id} />
+                {(token || isAdmin) && (
+                  <button
+                    onClick={() => handleDelete(ev.id)}
+                    disabled={deletingId === ev.id}
+                    className="text-xs text-red-500 hover:text-red-600 transition-colors disabled:opacity-50"
+                  >
+                    {deletingId === ev.id ? 'Eliminando...' : 'Eliminar'}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         )

@@ -8,7 +8,9 @@ import EvaluacionLista from '@/components/EvaluacionLista'
 import EvaluacionForm from '@/components/EvaluacionForm'
 import WikiSeccion from '@/components/WikiSeccion'
 import FotoProfesor from '@/components/FotoProfesor'
+import AdminProfesorAcciones from '@/components/admin/AdminProfesorAcciones'
 import { formatRating } from '@/lib/utils'
+import { getAdminEmail } from '@/lib/admin'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -17,6 +19,7 @@ interface Props {
 export default async function ProfesorPerfilPage({ params }: Props) {
   const { slug } = await params
   const supabase = await createServerClient()
+  const isAdmin = !!(await getAdminEmail())
 
   const { data: profesor } = await supabase
     .from('profesores_con_stats')
@@ -70,6 +73,7 @@ export default async function ProfesorPerfilPage({ params }: Props) {
             nombre={profesor.nombre}
             apellido={profesor.apellido}
             fotoUrl={profesor.foto_url}
+            isAdmin={isAdmin}
           />
           <div className="flex-1 min-w-0">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 truncate">
@@ -93,6 +97,14 @@ export default async function ProfesorPerfilPage({ params }: Props) {
           </div>
         </div>
       </div>
+
+      {isAdmin && (
+        <AdminProfesorAcciones
+          profesorId={profesor.id}
+          nombre={profesor.nombre}
+          apellido={profesor.apellido}
+        />
+      )}
 
       {/* Stats */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
@@ -137,6 +149,7 @@ export default async function ProfesorPerfilPage({ params }: Props) {
               label={label}
               icon={icon}
               aportes={aportesTyped.filter((a) => a.seccion === key)}
+              isAdmin={isAdmin}
             />
           ))}
         </div>
@@ -147,7 +160,7 @@ export default async function ProfesorPerfilPage({ params }: Props) {
 
       <div>
         <h2 className="text-xl font-bold text-gray-900 mb-4">Evaluaciones</h2>
-        <EvaluacionLista evaluaciones={(evaluaciones ?? []) as EvaluacionConAsignatura[]} />
+        <EvaluacionLista evaluaciones={(evaluaciones ?? []) as EvaluacionConAsignatura[]} isAdmin={isAdmin} />
       </div>
     </div>
   )

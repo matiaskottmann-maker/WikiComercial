@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import type { AporteWiki, SeccionWiki } from '@/types'
 import { saveEditToken, getEditToken, removeEditToken } from '@/lib/utils'
 import CountdownTimer from './CountdownTimer'
+import ReportarButton from './ReportarButton'
 
 interface WikiSeccionProps {
   profesorId: string
@@ -12,9 +13,10 @@ interface WikiSeccionProps {
   label: string
   icon: string
   aportes: AporteWiki[]
+  isAdmin?: boolean
 }
 
-export default function WikiSeccion({ profesorId, seccion, label, icon, aportes }: WikiSeccionProps) {
+export default function WikiSeccion({ profesorId, seccion, label, icon, aportes, isAdmin = false }: WikiSeccionProps) {
   const [abierto, setAbierto] = useState(false)
   const [contenido, setContenido] = useState('')
   const [loading, setLoading] = useState(false)
@@ -94,13 +96,14 @@ export default function WikiSeccion({ profesorId, seccion, label, icon, aportes 
 
   async function handleDelete(aporteId: string) {
     const token = getEditToken(aporteId)
-    if (!token) return
+    if (!token && !isAdmin) return
+    if (isAdmin && !token && !confirm('¿Eliminar este aporte definitivamente?')) return
 
     try {
       const res = await fetch(`/api/aportes/${aporteId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ edit_token: token.token }),
+        body: JSON.stringify(token ? { edit_token: token.token } : {}),
       })
 
       if (!res.ok) {
@@ -164,23 +167,28 @@ export default function WikiSeccion({ profesorId, seccion, label, icon, aportes 
                 ) : (
                   <div>
                     <p className="text-gray-700 text-sm leading-relaxed">{a.contenido}</p>
-                    {token && (
-                      <div className="flex items-center gap-3 mt-2">
-                        <CountdownTimer createdAt={token.createdAt} onExpire={forceRender} />
-                        <button
-                          onClick={() => { setEditingId(a.id); setEditContenido(a.contenido) }}
-                          className="text-xs text-uc-blue hover:text-uc-blue-light transition-colors"
-                        >
-                          Editar
-                        </button>
+                    <div className="flex items-center gap-3 mt-2">
+                      {token && (
+                        <>
+                          <CountdownTimer createdAt={token.createdAt} onExpire={forceRender} />
+                          <button
+                            onClick={() => { setEditingId(a.id); setEditContenido(a.contenido) }}
+                            className="text-xs text-uc-blue hover:text-uc-blue-light transition-colors"
+                          >
+                            Editar
+                          </button>
+                        </>
+                      )}
+                      {(token || isAdmin) && (
                         <button
                           onClick={() => handleDelete(a.id)}
                           className="text-xs text-red-500 hover:text-red-600 transition-colors"
                         >
                           Eliminar
                         </button>
-                      </div>
-                    )}
+                      )}
+                      <ReportarButton aporteId={a.id} />
+                    </div>
                   </div>
                 )}
               </li>
