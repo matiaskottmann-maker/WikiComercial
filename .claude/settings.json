@@ -8,7 +8,10 @@
       "Read(//private/tmp/**)",
       "Bash(ping -c1 -t2 supabase.co)",
       "Bash(dscacheutil -q host -a name rvnokuvufrxfhujlunnr.supabase.co)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" https://supabase.com)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" https://supabase.com)",
+      "Bash(git commit -q -m 'feat: error explícito en login cuando el correo no es admin *)",
+      "Bash(git push *)",
+      "Bash(git commit -q -m 'feat: login de admin con Google OAuth \\(magic link como respaldo\\) *)"
     ]
   }
 }
