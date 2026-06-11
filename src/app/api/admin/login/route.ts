@@ -29,6 +29,15 @@ export async function POST(request: NextRequest) {
     const { error } = await supabase.auth.signInWithOtp({ email })
 
     if (error) {
+      if (error.code === 'over_email_send_rate_limit' || error.status === 429) {
+        return NextResponse.json(
+          {
+            error:
+              'Se alcanzó el límite de correos por hora de Supabase. Espera ~1 hora e intenta de nuevo. Si ya tienes una sesión iniciada, sigue siendo válida.',
+          },
+          { status: 429 }
+        )
+      }
       return NextResponse.json(
         { error: 'No se pudo enviar el enlace. Intenta de nuevo en unos minutos.' },
         { status: 500 }
