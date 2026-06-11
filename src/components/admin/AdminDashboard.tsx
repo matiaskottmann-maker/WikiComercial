@@ -85,6 +85,27 @@ export default function AdminDashboard({
         </button>
       </div>
 
+      <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4">
+        <p className="text-sm text-gray-600 mb-3">
+          Navega la página normalmente — como admin verás botones para eliminar y editar contenido
+          en los perfiles de profesores.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href="/"
+            className="text-sm font-semibold bg-uc-blue text-white px-4 py-2 rounded-xl hover:bg-uc-blue-light transition-colors"
+          >
+            🏠 Ir al inicio
+          </Link>
+          <Link
+            href="/profesores"
+            className="text-sm font-semibold bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-xl hover:bg-gray-50 transition-colors"
+          >
+            👨‍🏫 Ver profesores
+          </Link>
+        </div>
+      </div>
+
       <Link
         href="/admin/reportes"
         className="block bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md transition-shadow"
