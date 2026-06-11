@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit -m 'docs: spec de cuentas de admin y moderación *)",
+      "Bash(git commit -m 'feat: migración de tablas admins y reportes *)",
+      "Bash(tail -20 /tmp/wikifeduc-dev.log; echo \"---\"; lsof -i :3000 -P -n | head -5)",
+      "Read(//private/tmp/**)",
+      "Bash(ping -c1 -t2 supabase.co)",
+      "Bash(dscacheutil -q host -a name rvnokuvufrxfhujlunnr.supabase.co)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" https://supabase.com)"
+    ]
+  }
+}
