@@ -41,7 +41,16 @@ export default function RootLayout({
         <footer className="border-t border-gray-100 mt-16">
           <div className="max-w-5xl mx-auto px-4 py-8 text-center">
             <p className="text-sm text-gray-400">
-              WikiComercial — Hecho por estudiantes, para estudiantes.
+              WikiComercial — Elaborado por{' '}
+              <a
+                href="https://homeroai.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-uc-blue hover:underline"
+              >
+                Homero AI
+              </a>
+              .
             </p>
           </div>
         </footer>
