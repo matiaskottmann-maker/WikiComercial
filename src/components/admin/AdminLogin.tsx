@@ -44,7 +44,7 @@ export default function AdminLogin() {
 
         {mensaje ? (
           <div className="bg-blue-50 text-uc-blue rounded-xl p-4 text-sm">
-            {mensaje} Revisa tu bandeja de entrada (y spam).
+            ✉️ {mensaje} Revisa tu bandeja de entrada (y spam).
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -63,7 +63,11 @@ export default function AdminLogin() {
             >
               {loading ? 'Enviando...' : 'Enviar enlace'}
             </button>
-            {error && <p className="text-red-600 text-sm">{error}</p>}
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 text-sm">
+                ⚠️ {error}
+              </div>
+            )}
           </form>
         )}
       </div>

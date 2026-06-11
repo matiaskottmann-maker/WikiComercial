@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient, createServiceRoleClient } from '@/lib/supabase/server'
 
-const RESPUESTA_GENERICA = {
-  message: 'Si tu correo es de administrador, recibirás un enlace de acceso.',
-}
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -22,13 +18,27 @@ export async function POST(request: NextRequest) {
       .eq('email', email)
       .maybeSingle()
 
-    if (admin) {
-      const supabase = await createServerClient()
-      await supabase.auth.signInWithOtp({ email })
+    if (!admin) {
+      return NextResponse.json(
+        { error: 'Este correo no está registrado como administrador.' },
+        { status: 403 }
+      )
     }
 
-    return NextResponse.json(RESPUESTA_GENERICA)
+    const supabase = await createServerClient()
+    const { error } = await supabase.auth.signInWithOtp({ email })
+
+    if (error) {
+      return NextResponse.json(
+        { error: 'No se pudo enviar el enlace. Intenta de nuevo en unos minutos.' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({
+      message: 'Te enviamos un enlace de acceso a tu correo.',
+    })
   } catch {
-    return NextResponse.json(RESPUESTA_GENERICA)
+    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })
   }
 }

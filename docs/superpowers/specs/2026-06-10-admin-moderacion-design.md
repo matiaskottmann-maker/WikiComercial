@@ -75,9 +75,8 @@ implícitamente).
 2. `POST /api/admin/login` con `{ email }`:
    - Normaliza a minúsculas y verifica contra la tabla `admins` (service role).
    - Si está en la lista → `supabase.auth.signInWithOtp({ email })` envía el magic link.
-   - Si NO está → no se envía nada.
-   - **En ambos casos** responde 200 con el mismo mensaje genérico
-     ("Si tu correo es de administrador, recibirás un enlace"), para no revelar quiénes son admins.
+   - Si NO está → 403 con error explícito ("Este correo no está registrado como administrador").
+     (Decisión del dueño 2026-06-11: se priorizó claridad de UX sobre no revelar la lista de admins.)
 3. El magic link redirige a `/auth/confirm` (route handler que hace `verifyOtp` con el
    `token_hash` del enlace — patrón oficial de `@supabase/ssr`, funciona aunque el correo se abra
    en otro navegador/dispositivo) y de ahí a `/admin`. Requiere ajustar el template del email
