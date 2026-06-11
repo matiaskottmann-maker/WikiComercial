@@ -110,7 +110,7 @@ export default function AdminLogin({ sesionNoAdmin = null }: AdminLoginProps) {
         {modo === 'login' ? (
           <>
             <p className="text-sm text-gray-500 mb-6">
-              Ingresa con tu correo y contraseña. Si es tu primera vez, presiona "Entrar" sin poner constraseña y te pediremos crear una.
+              Ingresa con tu correo y contraseña. Si es tu primera vez, presiona &quot;Entrar&quot; sin poner contraseña y te pediremos crear una.
             </p>
             <form onSubmit={handleLogin} className="space-y-4">
               <input
