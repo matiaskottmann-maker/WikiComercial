@@ -45,6 +45,30 @@ export default function AdminDashboard({
     }
   }
 
+  async function handleResetear(email: string) {
+    if (
+      !confirm(
+        `${email} tendrá que crear una contraseña nueva en su próximo inicio de sesión. ¿Continuar?`
+      )
+    )
+      return
+    setError(null)
+
+    try {
+      const res = await fetch('/api/admin/admins', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Error al resetear')
+
+      router.refresh()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error desconocido')
+    }
+  }
+
   async function handleEliminar(email: string) {
     if (!confirm(`¿Quitar a ${email} de los administradores?`)) return
     setError(null)
@@ -139,21 +163,36 @@ export default function AdminDashboard({
 
         <ul className="divide-y divide-gray-50 mb-4">
           {admins.map((a) => (
-            <li key={a.email} className="flex items-center justify-between py-2.5">
-              <span className="text-sm text-gray-700">
+            <li key={a.email} className="flex items-center justify-between gap-3 py-2.5">
+              <span className="text-sm text-gray-700 min-w-0 truncate">
                 {a.email}
                 {a.email === adminEmail && (
                   <span className="ml-2 text-xs text-gray-400">(tú)</span>
                 )}
+                {!a.password_creada && (
+                  <span className="ml-2 text-xs text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
+                    sin contraseña aún
+                  </span>
+                )}
               </span>
-              {a.email !== adminEmail && (
-                <button
-                  onClick={() => handleEliminar(a.email)}
-                  className="text-xs text-red-500 hover:text-red-600 transition-colors"
-                >
-                  Quitar
-                </button>
-              )}
+              <span className="flex gap-3 shrink-0">
+                {a.password_creada && (
+                  <button
+                    onClick={() => handleResetear(a.email)}
+                    className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    Resetear clave
+                  </button>
+                )}
+                {a.email !== adminEmail && (
+                  <button
+                    onClick={() => handleEliminar(a.email)}
+                    className="text-xs text-red-500 hover:text-red-600 transition-colors"
+                  >
+                    Quitar
+                  </button>
+                )}
+              </span>
             </li>
           ))}
         </ul>

@@ -109,6 +109,7 @@ export interface EditToken {
 export interface Admin {
   email: string
   added_by: string | null
+  password_creada: boolean
   created_at: string
 }
 

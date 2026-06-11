@@ -6,6 +6,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const email =
       typeof body.email === 'string' ? body.email.trim().toLowerCase() : ''
+    const password = typeof body.password === 'string' ? body.password : ''
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json({ error: 'Email inválido' }, { status: 400 })
@@ -14,7 +15,7 @@ export async function POST(request: NextRequest) {
     const service = createServiceRoleClient()
     const { data: admin } = await service
       .from('admins')
-      .select('email')
+      .select('email, password_creada')
       .eq('email', email)
       .maybeSingle()
 
@@ -25,28 +26,23 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const supabase = await createServerClient()
-    const { error } = await supabase.auth.signInWithOtp({ email })
-
-    if (error) {
-      if (error.code === 'over_email_send_rate_limit' || error.status === 429) {
-        return NextResponse.json(
-          {
-            error:
-              'Se alcanzó el límite de correos por hora de Supabase. Espera ~1 hora e intenta de nuevo. Si ya tienes una sesión iniciada, sigue siendo válida.',
-          },
-          { status: 429 }
-        )
-      }
-      return NextResponse.json(
-        { error: 'No se pudo enviar el enlace. Intenta de nuevo en unos minutos.' },
-        { status: 500 }
-      )
+    // Primer login (o contraseña reseteada): la UI pasa a modo "crear contraseña"
+    if (!admin.password_creada) {
+      return NextResponse.json({ necesitaCrear: true })
     }
 
-    return NextResponse.json({
-      message: 'Te enviamos un enlace de acceso a tu correo.',
-    })
+    if (!password) {
+      return NextResponse.json({ error: 'Contraseña requerida' }, { status: 400 })
+    }
+
+    const supabase = await createServerClient()
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+
+    if (error) {
+      return NextResponse.json({ error: 'Contraseña incorrecta' }, { status: 401 })
+    }
+
+    return NextResponse.json({ success: true })
   } catch {
     return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })
   }

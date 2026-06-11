@@ -52,6 +52,47 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// Resetear contraseña: el admin vuelve al estado "crear contraseña en el próximo login"
+export async function PATCH(request: NextRequest) {
+  try {
+    const adminEmail = await getAdminEmail()
+    if (!adminEmail) {
+      return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
+    }
+
+    const body = await request.json()
+    const email =
+      typeof body.email === 'string' ? body.email.trim().toLowerCase() : ''
+
+    if (!email) {
+      return NextResponse.json({ error: 'Email requerido' }, { status: 400 })
+    }
+
+    const supabase = createServiceRoleClient()
+
+    const { data: admin } = await supabase
+      .from('admins')
+      .select('email')
+      .eq('email', email)
+      .maybeSingle()
+
+    if (!admin) {
+      return NextResponse.json({ error: 'Ese email no es admin' }, { status: 404 })
+    }
+
+    const { error } = await supabase
+      .from('admins')
+      .update({ password_creada: false })
+      .eq('email', email)
+
+    if (error) return NextResponse.json({ error: 'Error al resetear' }, { status: 500 })
+
+    return NextResponse.json({ success: true })
+  } catch {
+    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })
+  }
+}
+
 export async function DELETE(request: NextRequest) {
   try {
     const adminEmail = await getAdminEmail()
