@@ -107,6 +107,16 @@ export default function AdminDashboard({
       </div>
 
       <Link
+        href="/admin/asignaturas"
+        className="block bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md transition-shadow"
+      >
+        <div className="flex items-center justify-between">
+          <span className="font-semibold text-gray-900">📚 Asignaturas</span>
+          <span className="text-sm text-gray-400">renombrar y fusionar duplicadas →</span>
+        </div>
+      </Link>
+
+      <Link
         href="/admin/reportes"
         className="block bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md transition-shadow"
       >
