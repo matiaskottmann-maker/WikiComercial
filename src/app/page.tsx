@@ -21,13 +21,13 @@ export default async function HomePage() {
       <section className="text-center py-16">
         <div className="inline-flex items-center gap-2 bg-blue-50 text-uc-blue text-sm font-medium px-4 py-1.5 rounded-full mb-6">
           <span className="w-1.5 h-1.5 bg-uc-blue rounded-full animate-pulse"></span>
-          Plataforma comunitaria y anonima
+          Plataforma comunitaria y anónima
         </div>
         <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 mb-4 tracking-tight">
           Wiki<span className="text-uc-blue">Comercial</span>
         </h1>
         <p className="text-lg text-gray-500 mb-8 max-w-md mx-auto leading-relaxed">
-           Evalua y descubre como son los profesores de Ingenieria Comercial UC
+           Evalúa y descubre cómo son los profesores de Ingeniería Comercial UC
         </p>
         <div className="flex gap-3 justify-center flex-wrap">
           <Link
@@ -45,7 +45,7 @@ export default async function HomePage() {
         <section>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-gray-900">
-              Profesores mas evaluados
+              Profesores más evaluados
             </h2>
             <Link
               href="/profesores"

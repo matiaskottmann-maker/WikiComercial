@@ -75,13 +75,13 @@ export interface AporteWiki {
 }
 
 export const SECCIONES_WIKI: { key: SeccionWiki; label: string; icon: string }[] = [
-  { key: 'curriculum', label: 'Curriculum', icon: '📚' },
+  { key: 'curriculum', label: 'Currículum', icon: '📚' },
   { key: 'personalidad', label: 'Personalidad', icon: '🧑' },
   { key: 'sus_clases', label: 'Sus Clases', icon: '🏫' },
   { key: 'sus_pruebas', label: 'Sus Pruebas', icon: '📝' },
   { key: 'recomendaciones', label: 'Recomendaciones', icon: '💡' },
   { key: 'datos_freak', label: 'Datos Freak', icon: '🤓' },
-  { key: 'frases_tipicas', label: 'Frases Tipicas', icon: '💬' },
+  { key: 'frases_tipicas', label: 'Frases Típicas', icon: '💬' },
 ]
 
 export interface EvaluacionPayload {

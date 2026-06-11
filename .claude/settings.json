@@ -11,7 +11,9 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" https://supabase.com)",
       "Bash(git commit -q -m 'feat: error explícito en login cuando el correo no es admin *)",
       "Bash(git push *)",
-      "Bash(git commit -q -m 'feat: login de admin con Google OAuth \\(magic link como respaldo\\) *)"
+      "Bash(git commit -q -m 'feat: login de admin con Google OAuth \\(magic link como respaldo\\) *)",
+      "Bash(git commit -q -m 'copy: aclarar flujo de primera vez en login de admin *)",
+      "Bash(git commit -q -m 'copy: corregir tildes y ortografía en textos visibles *)"
     ]
   }
 }

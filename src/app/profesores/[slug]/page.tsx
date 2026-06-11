@@ -139,7 +139,7 @@ export default async function ProfesorPerfilPage({ params }: Props) {
 
       {/* Secciones Wiki */}
       <div>
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Informacion del profesor</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-4">Información del profesor</h2>
         <div className="grid gap-3 sm:grid-cols-2">
           {SECCIONES_WIKI.map(({ key, label, icon }) => (
             <WikiSeccion

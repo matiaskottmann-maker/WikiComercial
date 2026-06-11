@@ -59,7 +59,7 @@ export default function EvaluacionForm({ profesorId }: EvaluacionFormProps) {
       const data = await res.json()
 
       if (!res.ok) {
-        throw new Error(data.error || 'Error al enviar evaluacion')
+        throw new Error(data.error || 'Error al enviar evaluación')
       }
 
       saveEditToken(data.id, 'evaluacion', data.editToken)
@@ -139,7 +139,7 @@ export default function EvaluacionForm({ profesorId }: EvaluacionFormProps) {
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1.5">
-          Aprobaste? <span className="text-gray-400 font-normal">(opcional)</span>
+          ¿Aprobaste? <span className="text-gray-400 font-normal">(opcional)</span>
         </label>
         <div className="flex gap-3">
           <button
@@ -176,11 +176,11 @@ export default function EvaluacionForm({ profesorId }: EvaluacionFormProps) {
         disabled={loading}
         className="w-full bg-gradient-to-r from-uc-blue to-uc-blue-light text-white py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-uc-blue/25 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none"
       >
-        {loading ? 'Enviando...' : 'Enviar evaluacion'}
+        {loading ? 'Enviando...' : 'Enviar evaluación'}
       </button>
 
       <p className="text-xs text-gray-400 text-center">
-        Tu evaluacion es completamente anonima.
+        Tu evaluación es completamente anónima.
       </p>
     </form>
   )
