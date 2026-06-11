@@ -1,4 +1,4 @@
-import { createServiceRoleClient } from '@/lib/supabase/server'
+import { createServerClient, createServiceRoleClient } from '@/lib/supabase/server'
 import { getAdminEmail } from '@/lib/admin'
 import AdminLogin from '@/components/admin/AdminLogin'
 import AdminDashboard from '@/components/admin/AdminDashboard'
@@ -10,7 +10,13 @@ export default async function AdminPage() {
   const adminEmail = await getAdminEmail()
 
   if (!adminEmail) {
-    return <AdminLogin />
+    // Detectar si hay sesión activa de un correo que NO es admin
+    const authClient = await createServerClient()
+    const {
+      data: { user },
+    } = await authClient.auth.getUser()
+
+    return <AdminLogin sesionNoAdmin={user?.email ?? null} />
   }
 
   const supabase = createServiceRoleClient()
