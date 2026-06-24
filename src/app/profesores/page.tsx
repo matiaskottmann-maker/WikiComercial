@@ -5,6 +5,7 @@ import ProfesorCard from '@/components/ProfesorCard'
 import Buscador from '@/components/Buscador'
 import FiltroAsignatura from '@/components/FiltroAsignatura'
 import CrearProfesorModal from '@/components/CrearProfesorModal'
+import { adjuntarAsignaturas } from '@/lib/profesores'
 
 interface Props {
   searchParams: Promise<{ q?: string; asignatura?: string }>
@@ -42,6 +43,11 @@ export default async function ProfesoresPage({ searchParams }: Props) {
     filteredProfesores = filteredProfesores.filter((p) => profesorIds.has(p.id))
   }
 
+  const profesoresConAsignaturas = await adjuntarAsignaturas(
+    supabase,
+    filteredProfesores
+  )
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -70,7 +76,7 @@ export default async function ProfesoresPage({ searchParams }: Props) {
         </div>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
-          {filteredProfesores.map((profesor) => (
+          {profesoresConAsignaturas.map((profesor) => (
             <ProfesorCard key={profesor.id} profesor={profesor} />
           ))}
         </div>

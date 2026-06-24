@@ -3,17 +3,23 @@ import { createServerClient } from '@/lib/supabase/server'
 import type { ProfesorConStats } from '@/types'
 import ProfesorCard from '@/components/ProfesorCard'
 import CrearProfesorModal from '@/components/CrearProfesorModal'
+import { adjuntarAsignaturas } from '@/lib/profesores'
 
 export default async function HomePage() {
   const supabase = await createServerClient()
 
-  const { data: profesores } = await supabase
+  const { data: profesoresData } = await supabase
     .from('profesores_con_stats')
     .select('*')
     .order('total_evaluaciones', { ascending: false })
-    .limit(6)
+    .limit(8)
 
-  const hayProfesores = profesores && profesores.length > 0
+  const profesores = await adjuntarAsignaturas(
+    supabase,
+    (profesoresData ?? []) as ProfesorConStats[]
+  )
+
+  const hayProfesores = profesores.length > 0
 
   return (
     <div className="space-y-12">
@@ -43,21 +49,23 @@ export default async function HomePage() {
       {/* Top profesores */}
       {hayProfesores && (
         <section>
-          <div className="flex items-center justify-between mb-6">
+          <div className="mb-6">
             <h2 className="text-xl font-bold text-gray-900">
               Profesores más evaluados
             </h2>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {profesores.map((profesor) => (
+              <ProfesorCard key={profesor.id} profesor={profesor} />
+            ))}
+          </div>
+          <div className="flex justify-end mt-6">
             <Link
               href="/profesores"
-              className="text-sm text-uc-blue font-medium hover:text-uc-blue-light transition-colors"
+              className="text-sm text-uc-blue font-medium hover:text-uc-blue-light transition-colors cursor-pointer"
             >
               Ver todos
             </Link>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {(profesores as ProfesorConStats[]).map((profesor) => (
-              <ProfesorCard key={profesor.id} profesor={profesor} />
-            ))}
           </div>
         </section>
       )}

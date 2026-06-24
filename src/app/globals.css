@@ -8,6 +8,20 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Cursor pointer consistente en elementos interactivos y todo su contenido */
+a[href],
+button:not(:disabled),
+[role="button"],
+label[for] {
+  cursor: pointer;
+}
+
+a[href] *,
+button:not(:disabled) *,
+[role="button"] * {
+  cursor: inherit;
+}
+
 /* Modal animation */
 .animate-in {
   animation: animateIn 0.2s ease-out;

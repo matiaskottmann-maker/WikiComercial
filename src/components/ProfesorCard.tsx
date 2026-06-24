@@ -1,11 +1,11 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import type { ProfesorConStats } from '@/types'
+import type { Asignatura, ProfesorConStats } from '@/types'
 import RatingStars from './RatingStars'
 import { formatRating } from '@/lib/utils'
 
 interface ProfesorCardProps {
-  profesor: ProfesorConStats
+  profesor: ProfesorConStats & { asignaturas?: Asignatura[] }
 }
 
 export default function ProfesorCard({ profesor }: ProfesorCardProps) {
@@ -32,6 +32,11 @@ export default function ProfesorCard({ profesor }: ProfesorCardProps) {
           <h3 className="font-semibold text-gray-900 truncate group-hover:text-uc-blue transition-colors">
             {profesor.nombre} {profesor.apellido}
           </h3>
+          {profesor.asignaturas && profesor.asignaturas.length > 0 && (
+            <p className="text-xs text-gray-500 truncate mt-0.5">
+              {profesor.asignaturas.map((a) => a.nombre).join(' · ')}
+            </p>
+          )}
           <div className="flex items-center gap-2 mt-1.5">
             <span className="text-xl font-bold text-uc-blue">
               {formatRating(profesor.avg_general)}

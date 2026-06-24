@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import './globals.css'
 import { getAdminEmail } from '@/lib/admin'
 import AdminBanner from '@/components/admin/AdminBanner'
@@ -22,13 +23,15 @@ export default async function RootLayout({
         {adminEmail && <AdminBanner adminEmail={adminEmail} />}
         <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b border-gray-100">
           <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-uc-blue to-uc-blue-light rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">W</span>
-              </div>
-              <span className="text-lg font-bold text-gray-900">
-                Wiki<span className="text-uc-blue">Comercial</span>
-              </span>
+            <Link href="/" className="flex items-center" aria-label="WikiComercial — inicio">
+              <Image
+                src="/logo.png"
+                alt="WikiComercial"
+                width={1271}
+                height={226}
+                priority
+                className="h-7 w-auto sm:h-8"
+              />
             </Link>
             <nav className="flex items-center gap-1">
               <Link
@@ -49,7 +52,7 @@ export default async function RootLayout({
         <main className="max-w-5xl mx-auto px-4 py-8">
           {children}
         </main>
-        <footer className="border-t border-gray-100 mt-16">
+        <footer className="border-t border-gray-100 mt-8">
           <div className="max-w-5xl mx-auto px-4 py-8 text-center">
             <p className="text-sm text-gray-400">
               WikiComercial — Elaborado por{' '}
@@ -57,7 +60,7 @@ export default async function RootLayout({
                 href="https://homeroai.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-uc-blue hover:underline"
+                className="text-uc-blue hover:underline cursor-pointer"
               >
                 Homero AI
               </a>
